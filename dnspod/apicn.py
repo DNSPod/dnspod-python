@@ -27,7 +27,7 @@ class ApiCn:
             name = re.sub(r'([A-Z])', r'.\1', self.__class__.__name__)
             self.path = "/" + name[1:]
         conn = httplib.HTTPSConnection(self.base_url)
-        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json"}
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "User-Agent": "dnspod-python/0.01 (im@chuangbo.li; DNSPod.CN API v2.8)"}
         conn.request("POST", self.path, urllib.urlencode(self.params), headers)
         
         response = conn.getresponse()
