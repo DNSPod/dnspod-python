@@ -9,14 +9,20 @@ import re
 
 
 class ApiCn:
-    def __init__(self, email, password, **kw):
+    def __init__(self, email=None, password=None, login_token=None, **kw):
         self.base_url = "dnsapi.cn"
-        
-        self.params = dict(
-            login_email=email,
-            login_password=password,
-            format="json",
-        )
+
+        if login_token:
+            self.params = dict(
+                login_token=login_token,
+                format="json",
+            )
+        else:
+            self.params = dict(
+                login_email=email,
+                login_password=password,
+                format="json",
+            )
         self.params.update(kw)
         self.path = None
     
