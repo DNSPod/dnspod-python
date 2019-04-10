@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-import httplib, urllib
-try: import json
-except: import simplejson as json
-import socket
 import re
+import requests
 
+try:
+    import json
+except:
+    import simplejson as json
+
+class DNSPodApiException(Exception):
+    pass
 
 class ApiCn:
     def __init__(self, email=None, password=None, login_token=None, **kw):
@@ -25,28 +29,29 @@ class ApiCn:
             )
         self.params.update(kw)
         self.path = None
-    
+
     def request(self, **kw):
         self.params.update(kw)
         if not self.path:
             """Class UserInfo will auto request path /User.Info."""
             name = re.sub(r'([A-Z])', r'.\1', self.__class__.__name__)
             self.path = "/" + name[1:]
-        conn = httplib.HTTPSConnection(self.base_url)
-        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/json", "User-Agent": "dnspod-python/0.01 (im@chuangbo.li; DNSPod.CN API v2.8)"}
-        conn.request("POST", self.path, urllib.urlencode(self.params), headers)
-        
-        response = conn.getresponse()
-        data = response.read()
-        conn.close()
+        headers = {
+            "Content-type": "application/x-www-form-urlencoded",
+            "Accept": "text/json",
+            "User-Agent": "dnspod-python/0.01 (im@chuangbo.li; DNSPod.CN API v2.8)"
+        }
+        url = "https://" + self.base_url + self.path
+        response = requests.post(url, data=self.params, headers=headers)
+        data = response.text
         ret = json.loads(data)
         if ret.get("status", {}).get("code") == "1":
             return ret
         else:
-            raise Exception(ret)
-    
+            raise DNSPodApiException(ret)
+
     __call__ = request
-    
+
 class InfoVersion(ApiCn):
     pass
 
@@ -79,15 +84,15 @@ class _DomainApiBase(ApiCn):
 
 class DomainRemove(_DomainApiBase):
     pass
-        
+
 class DomainStatus(_DomainApiBase):
     def __init__(self, status, **kw):
         kw.update(dict(status=status))
         _DomainApiBase.__init__(self, **kw)
-        
+
 class DomainInfo(_DomainApiBase):
     pass
-        
+
 class DomainLog(_DomainApiBase):
     pass
 
@@ -95,7 +100,7 @@ class RecordType(ApiCn):
     def __init__(self, domain_grade, **kw):
         kw.update(dict(domain_grade=domain_grade))
         ApiCn.__init__(self, **kw)
-        
+
 class RecordLine(ApiCn):
     def __init__(self, domain_grade, **kw):
         kw.update(dict(domain_grade=domain_grade))
@@ -118,7 +123,7 @@ class RecordModify(RecordCreate):
     def __init__(self, record_id, **kw):
         kw.update(dict(record_id=record_id))
         RecordCreate.__init__(self, **kw)
- 
+
 class RecordList(_DomainApiBase):
     pass
 
