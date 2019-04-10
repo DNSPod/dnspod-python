@@ -1,46 +1,49 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
-from dnspod.apicn import *
+
+from dnspod import apicn
+
 
 def main():
-    email = "Your Email Here"
-    password = "Your Password Here"
-    
-    import random
-    domain = "test%d.com" % random.randint(1000, 100000)
-    
+    # please refer to:
+    # https://support.dnspod.cn/Kb/showarticle/tsid/227/
+    login_token = "Your TOKEN here"
+
+    domain = "Your DOMAIN here"
+
     print "DomainCreate", domain
-    api = DomainCreate(domain, email=email, password=password)
-    
+    api = apicn.DomainCreate(domain, login_token=login_token)
+
     domain_id = api().get("domain", {}).get("id")
     print "%s's id is %s" % (domain, domain_id)
-    
+
     print "DomainList"
-    api = DomainList(email=email, password=password)
+    api = apicn.DomainList(login_token=login_token)
     print api().get("domains")
-    
+
     print "RecordType"
-    api = RecordType("D_Ultra", email=email, password=password)
+    api = apicn.RecordType("D_Ultra", login_token=login_token)
     print api().get("types")
-    
+
     print "RecordLine"
-    api = RecordLine("D_Free", email=email, password=password)
+    api = apicn.RecordLine("D_Free", login_token=login_token)
     print api().get("lines")
-    
+
     print "RecordCreate"
-    api = RecordCreate("www", "A", u'默认'.encode("utf8"), '1.1.1.1', 600, domain_id=domain_id, email=email, password=password)
+    api = apicn.RecordCreate("www", "A", u'默认'.encode("utf8"), '1.1.1.1', 600, domain_id=domain_id, login_token=login_token)
     record = api().get("record", {})
     record_id = record.get("id")
     print "Record id", record_id
-    
+
     print "RecordList"
-    api = RecordList(domain_id, email=email, password=password)
+    api = apicn.RecordList(domain_id, login_token=login_token)
     print api().get("records")
-    
+
     print "DomainRemove"
-    api = DomainRemove(domain_id, email=email, password=password)
+    api = apicn.DomainRemove(domain_id, login_token=login_token)
     print api()
-    
+
+
 if __name__ == '__main__':
     main()
