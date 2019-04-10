@@ -1,16 +1,18 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
+
 
 import re
 import requests
-
 try:
     import json
-except:
+except Exception:
     import simplejson as json
+
 
 class DNSPodApiException(Exception):
     pass
+
 
 class ApiCn:
     def __init__(self, email=None, password=None, login_token=None, **kw):
@@ -52,59 +54,74 @@ class ApiCn:
 
     __call__ = request
 
+
 class InfoVersion(ApiCn):
     pass
+
 
 class UserDetail(ApiCn):
     pass
 
+
 class UserInfo(ApiCn):
     pass
 
+
 class UserLog(ApiCn):
     pass
+
 
 class DomainCreate(ApiCn):
     def __init__(self, domain, **kw):
         kw.update(dict(domain=domain))
         ApiCn.__init__(self, **kw)
 
+
 class DomainId(ApiCn):
     def __init__(self, domain, **kw):
         kw.update(dict(domain=domain))
         ApiCn.__init__(self, **kw)
 
+
 class DomainList(ApiCn):
     pass
+
 
 class _DomainApiBase(ApiCn):
     def __init__(self, domain_id, **kw):
         kw.update(dict(domain_id=domain_id))
         ApiCn.__init__(self, **kw)
 
+
 class DomainRemove(_DomainApiBase):
     pass
+
 
 class DomainStatus(_DomainApiBase):
     def __init__(self, status, **kw):
         kw.update(dict(status=status))
         _DomainApiBase.__init__(self, **kw)
 
+
 class DomainInfo(_DomainApiBase):
     pass
 
+
 class DomainLog(_DomainApiBase):
     pass
+
 
 class RecordType(ApiCn):
     def __init__(self, domain_grade, **kw):
         kw.update(dict(domain_grade=domain_grade))
         ApiCn.__init__(self, **kw)
 
+
 class RecordLine(ApiCn):
     def __init__(self, domain_grade, **kw):
         kw.update(dict(domain_grade=domain_grade))
         ApiCn.__init__(self, **kw)
+
 
 class RecordCreate(_DomainApiBase):
     def __init__(self, sub_domain, record_type, record_line, value, ttl, mx=None, **kw):
@@ -119,21 +136,26 @@ class RecordCreate(_DomainApiBase):
             kw.update(dict(mx=mx))
         _DomainApiBase.__init__(self, **kw)
 
+
 class RecordModify(RecordCreate):
     def __init__(self, record_id, **kw):
         kw.update(dict(record_id=record_id))
         RecordCreate.__init__(self, **kw)
 
+
 class RecordList(_DomainApiBase):
     pass
+
 
 class _RecordBase(_DomainApiBase):
     def __init__(self, record_id, **kw):
         kw.update(dict(record_id=record_id))
         _DomainApiBase.__init__(self, **kw)
 
+
 class RecordRemove(_RecordBase):
     pass
+
 
 class RecordDdns(_DomainApiBase):
     def __init__(self, record_id, sub_domain, record_line, **kw):
@@ -144,10 +166,12 @@ class RecordDdns(_DomainApiBase):
         ))
         _DomainApiBase.__init__(self, **kw)
 
+
 class RecordStatus(_RecordBase):
     def __init__(self, status, **kw):
         kw.update(dict(status=status))
         _RecordBase.__init__(self, **kw)
+
 
 class RecordInfo(_RecordBase):
     pass

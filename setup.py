@@ -15,4 +15,4 @@ setup(name='dnspod-python',
       long_description="Assemble DNSPod functions with your own program. Build your own dns hosting service.",
       license="GPL 3.0",
       platforms=["any"],
-)
+      )
