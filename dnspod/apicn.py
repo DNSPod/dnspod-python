@@ -135,7 +135,7 @@ class RecordDdns(_DomainApiBase):
         kw.update(dict(
             record_id=record_id,
             sub_domain=sub_domain,
-            record_type=record_type,
+#            record_type=record_type,
             record_line=record_line,
         ))
         _DomainApiBase.__init__(self, **kw)
